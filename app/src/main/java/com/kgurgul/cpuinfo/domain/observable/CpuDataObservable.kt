@@ -20,7 +20,7 @@ class CpuDataObservable @Inject constructor(
 
     override fun createObservable(params: Unit) = flow {
         while (true) {
-            val processorName = cpuDataNativeProvider.getCpuName()
+            val processorName = cpuDataProvider.getCpuName()
             val abi = cpuDataProvider.getAbi()
             val coreNumber = cpuDataProvider.getNumberOfCores()
             val hasArmNeon = cpuDataNativeProvider.hasArmNeon()

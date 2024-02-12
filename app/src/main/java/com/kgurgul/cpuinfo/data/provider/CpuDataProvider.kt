@@ -5,10 +5,23 @@ import timber.log.Timber
 import java.io.RandomAccessFile
 import javax.inject.Inject
 
-class CpuDataProvider @Inject constructor() {
+class CpuDataProvider @Inject constructor(
+    private val nativeProvider: CpuDataNativeProvider
+) {
 
     fun getAbi(): String {
         return Build.SUPPORTED_ABIS[0]
+    }
+
+    fun getCpuName(): String {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Build.SOC_MODEL != Build.UNKNOWN) {
+            return if (Build.SOC_MANUFACTURER != Build.UNKNOWN)
+                "${Build.SOC_MANUFACTURER} ${Build.SOC_MODEL}"
+            else
+                Build.SOC_MODEL
+        }
+
+        return nativeProvider.getCpuName()
     }
 
     fun getNumberOfCores(): Int {

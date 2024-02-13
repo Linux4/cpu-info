@@ -23,6 +23,8 @@
     <string name="no">No</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="supported">Supported</string>
+    <string name="unsupported">Unsupported</string>
 
     <!--Tabs-->
     <string name="cpu">CPU</string>
@@ -98,6 +100,13 @@
     <string name="absolute_height">Absolute Height</string>
     <string name="refresh_rate">Refresh rate</string>
     <string name="orientation">Orientation</string>
+    <string name="hdr">HDR</string>
+    <string name="hdr_type_dolby_vision">Dolby Vision</string>
+    <string name="hdr_type_hdr10">HDR10</string>
+    <string name="hdr_type_hdr10p">HDR10+</string>
+    <string name="hdr_type_hlg">HLG</string>
+    <string name="supported_modes">Modes</string>
+    <string name="wide_color_gamut">Wide color gamut</string>
     <string name="camera_lens_number">Number of lenses</string>
 
     <!--Android-->

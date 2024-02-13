@@ -2,7 +2,9 @@ package com.kgurgul.cpuinfo.data.provider
 
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build
 import android.util.DisplayMetrics
+import android.view.Display
 import android.view.WindowManager
 import com.kgurgul.cpuinfo.R
 import com.kgurgul.cpuinfo.utils.round2
@@ -128,6 +130,46 @@ class ScreenDataProvider @Inject constructor(
 
         val orientation = display.rotation
         functionsList.add(Pair(resources.getString(R.string.orientation), "$orientation"))
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            val hdrCapabilities = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                display.mode.supportedHdrTypes
+            else
+                display.hdrCapabilities.supportedHdrTypes
+
+            if (hdrCapabilities.isNotEmpty()) {
+                functionsList.add(
+                    Pair(
+                        resources.getString(R.string.hdr),
+                        hdrCapabilities.joinToString(", ") {
+                            if (it == Display.HdrCapabilities.HDR_TYPE_HDR10)
+                                resources.getString(R.string.hdr_type_hdr10)
+                            else if (it == Display.HdrCapabilities.HDR_TYPE_HLG)
+                                resources.getString(R.string.hdr_type_hlg)
+                            else if (it == Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS)
+                                resources.getString(R.string.hdr_type_hdr10p)
+                            else
+                                ""
+                        })
+                )
+            }
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && display.supportedModes.size > 1) {
+            val modes = display.supportedModes.joinToString("\n") {
+                "${it.physicalWidth}x${it.physicalHeight}@${it.refreshRate.round2()}"
+            }
+            functionsList.add(Pair(resources.getString(R.string.supported_modes), modes))
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            functionsList.add(Pair(resources.getString(R.string.wide_color_gamut),
+                if (display.isWideColorGamut) {
+                    resources.getString(R.string.supported)
+                } else {
+                    resources.getString(R.string.unsupported)
+                }))
+        }
 
         return functionsList
     }

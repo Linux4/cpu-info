@@ -101,6 +101,11 @@ object TestData {
         glVendor = "glVendor",
         glRenderer = "glRenderer",
         glExtensions = "glExtensions",
+        frequency = GpuData.Frequency(
+            min = 1,
+            max = 2,
+            current = 3
+        )
     )
 
     val storageData = listOf(

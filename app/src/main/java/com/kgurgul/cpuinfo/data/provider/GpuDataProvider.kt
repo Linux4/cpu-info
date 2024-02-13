@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
 import com.kgurgul.cpuinfo.R
+import timber.log.Timber
+import java.io.RandomAccessFile
 import javax.inject.Inject
 
 class GpuDataProvider @Inject constructor(
@@ -40,5 +42,32 @@ class GpuDataProvider @Inject constructor(
         val patch = vulkan shl 20 shr 22    // Lower 12 bits
         //
         return "$major.$minor.$patch"
+    }
+
+    fun getCurrentFreq() : Long {
+        val currentFreqPath = "${GPU_INFO_DIR}gpu_clock"
+        return try {
+            RandomAccessFile(currentFreqPath, "r").use { it.readLine().toLong() / 1000 }
+        } catch (e: Exception) {
+            Timber.e("getCurrentFreq() - cannot read file")
+            -1
+        }
+    }
+
+    fun getMinMaxFreq(): Pair<Long, Long> {
+        val minPath = "${GPU_INFO_DIR}gpu_min_clock"
+        val maxPath = "${GPU_INFO_DIR}gpu_max_clock"
+        return try {
+            val minMhz = RandomAccessFile(minPath, "r").use { it.readLine().toLong() / 1000 }
+            val maxMhz = RandomAccessFile(maxPath, "r").use { it.readLine().toLong() / 1000 }
+            Pair(minMhz, maxMhz)
+        } catch (e: Exception) {
+            Timber.e("getMinMaxFreq() - cannot read file")
+            Pair(-1, -1)
+        }
+    }
+
+    companion object {
+        private const val GPU_INFO_DIR = "/sys/kernel/gpu/"
     }
 }

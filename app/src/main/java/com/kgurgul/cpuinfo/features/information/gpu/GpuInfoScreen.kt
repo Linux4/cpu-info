@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kgurgul.cpuinfo.R
 import com.kgurgul.cpuinfo.domain.model.GpuData
 import com.kgurgul.cpuinfo.ui.components.CpuDivider
+import com.kgurgul.cpuinfo.ui.components.CpuProgressBar
 import com.kgurgul.cpuinfo.ui.components.ItemValueRow
 import com.kgurgul.cpuinfo.ui.theme.CpuInfoTheme
 import com.kgurgul.cpuinfo.ui.theme.spacingSmall
@@ -75,6 +76,13 @@ fun GpuInfoScreen(
         modifier = Modifier.fillMaxSize(),
     ) {
         uiState.gpuData?.let { gpuData ->
+            if (gpuData.frequency.current > -1) {
+                item(key = "__gpu_frequency") {
+                    FrequencyItem(gpuData.frequency)
+                    Spacer(modifier = Modifier.requiredSize(spacingSmall))
+                    CpuDivider()
+                }
+            }
             item(key = "__vulkan_version") {
                 ItemValueRow(
                     title = stringResource(id = R.string.vulkan_version),
@@ -130,6 +138,35 @@ fun GpuInfoScreen(
     }
 }
 
+@Composable
+fun FrequencyItem(frequency: GpuData.Frequency) {
+    val currentFreq = stringResource(
+        R.string.gpu_current_frequency,
+        frequency.current.toString()
+    )
+    val minFreq = if (frequency.min != -1L) {
+        stringResource(R.string.gpu_frequency, frequency.min.toString())
+    } else {
+        ""
+    }
+    val maxFreq = if (frequency.max != -1L) {
+        stringResource(R.string.gpu_frequency, frequency.max.toString())
+    } else {
+        ""
+    }
+    val progress = if (frequency.current != -1L) {
+        frequency.current.toFloat() / frequency.max.toFloat()
+    } else {
+        0f
+    }
+    CpuProgressBar(
+        label = currentFreq,
+        progress = progress,
+        minMaxValues = minFreq to maxFreq,
+        modifier = Modifier.focusable(),
+    )
+}
+
 @Preview
 @Composable
 fun GpuInfoScreenPreview() {
@@ -142,6 +179,11 @@ fun GpuInfoScreenPreview() {
                     glVendor = "glVendor",
                     glRenderer = "glRenderer",
                     glExtensions = "glExtensions",
+                    frequency = GpuData.Frequency(
+                        min = 1,
+                        max = 2,
+                        current = 3
+                    )
                 )
             )
         )

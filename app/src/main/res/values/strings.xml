@@ -64,6 +64,8 @@
     <string name="apps_sort_order">Sort order</string>
 
     <!--GPU-->
+    <string name="gpu_current_frequency" translatable="false">GPU: %1$sMHz</string>
+    <string name="gpu_frequency" translatable="false">%1$sMhz</string>
     <string name="vulkan_version">Vulkan Version</string>
     <string name="gles_version">GLES Version</string>
     <string name="vendor">Vendor</string>
